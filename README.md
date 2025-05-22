@@ -20,31 +20,27 @@ See the final result below [Homepage](#homepage):
 
 <details close><summary>
   
-### 0. Fork me if you can! 
+### 0. Fork me if you can
 
 </summary>
 
-<img src="./img/0-1.png">
-
-<img src="./img/0-2.png">
-
-<img src="./img/0-3.png">
+<img src="./images/Task_0.gif">
 
 </details>
 
 <details close><summary>
 
-### 1. Create cookie with expiration date and specific path
+### 1. Homepage - quotes
 
 </summary>
 
-<img src="./img/1.png">
+<img src="./images/Task_1.gif">
 
 </details>
 
 <details close><summary>
 
-### 2. Read cookie
+### 2. Homepage - popular tutorials
 
 </summary>
 
@@ -54,7 +50,7 @@ See the final result below [Homepage](#homepage):
 
 <details close><summary>
 
-### 3. Delete cookie and mini application
+### 3. Homepage - latest videos
 
 </summary>
 
@@ -66,7 +62,7 @@ See the final result below [Homepage](#homepage):
 
 <details close><summary>
 
-### 4. Use js-cookie
+### 4. Pricing - quotes
 
 </summary>
 
@@ -78,7 +74,7 @@ See the final result below [Homepage](#homepage):
 
 <details close><summary>
 
-### 5. Local storage
+### 5. Courses
 
 </summary>
 
@@ -94,19 +90,6 @@ See the final result below [Homepage](#homepage):
 
 <details close><summary>
 
-### 6. Session storage
-
-</summary>
-
-<img src="./img/6-1.png">  
-
-<img src="./img/6-2.png">  
-
-<img src="./img/6-3.png">
-
-</details>
-
-<details close><summary>
 These group of web pages were coded from scratch with the help of the Boostrap Framework and based on some design models given on Figma.
 
 [Figma Homepage](https://www.figma.com/file/QYQqMYbdpAHL5xTclwJKSI/Homepage)
