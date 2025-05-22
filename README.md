@@ -1,5 +1,112 @@
-# Holberton Smiling School (Bootstrap Project)
+# <p align="center">Holberton Smiling School Javascript</p>
 
+## Learning Objectives
+
+For this project You will use all HTML/CSS/Accessibility/Responsive design/Bootstrap/Javascript knowledges that you learned previously.
+
+You won’t have a lot of instruction, you are free to implement it the way that you want - the objective is simple: Have fully functional web pages that look the same as the designer file.
+
+See the final result below [Homepage](#homepage):
+
+## Requirements
+
+- You have to use Bootstrap
+- Your `styles.css` must be as small as you can - you must - use as much as you can **Bootstrap classes**
+- You have to use JQuery
+- Your `scripts.js` must contain all your Javascript part
+- Your Javascript must be executed only when the document - is loaded
+
+## Mandatory Tasks
+
+<details close><summary>
+  
+### 0. Fork me if you can! 
+
+</summary>
+
+<img src="./img/0-1.png">
+
+<img src="./img/0-2.png">
+
+<img src="./img/0-3.png">
+
+</details>
+
+<details close><summary>
+
+### 1. Create cookie with expiration date and specific path
+
+</summary>
+
+<img src="./img/1.png">
+
+</details>
+
+<details close><summary>
+
+### 2. Read cookie
+
+</summary>
+
+<img src="./img/2.png">
+
+</details>
+
+<details close><summary>
+
+### 3. Delete cookie and mini application
+
+</summary>
+
+<img src="./img/3-1.png">
+
+<img src="./img/3-2.png">
+
+</details>
+
+<details close><summary>
+
+### 4. Use js-cookie
+
+</summary>
+
+<img src="./img/4-1.png">
+
+<img src="./img/4-2.png">
+
+</details>
+
+<details close><summary>
+
+### 5. Local storage
+
+</summary>
+
+<img src="./img/5-1.png">
+
+<img src="./img/5-2.png">
+
+<img src="./img/5-3.png">
+
+<img src="./img/5-4.png">
+
+</details>
+
+<details close><summary>
+
+### 6. Session storage
+
+</summary>
+
+<img src="./img/6-1.png">  
+
+<img src="./img/6-2.png">  
+
+<img src="./img/6-3.png">
+
+</details>
+
+<details close><summary>
 These group of web pages were coded from scratch with the help of the Boostrap Framework and based on some design models given on Figma.
 
 [Figma Homepage](https://www.figma.com/file/QYQqMYbdpAHL5xTclwJKSI/Homepage)
@@ -72,7 +179,7 @@ The Holberton Smiling School web pages were developed by sections using the Boot
 
 [Footer](https://github.com/jzamora5/holberton-smiling-school/blob/master/courses.html)
 
-# Author:
+# Author
 
 Jhoan Zamora: [jzamora5](https://github.com/jzamora5)  
 Julie Dedieu: [Julieed-971](https://github.com/Julieed-971/)
