@@ -44,7 +44,7 @@ See the final result below [Homepage](#homepage):
 
 </summary>
 
-<img src="./img/2.png">
+<img src="./images/Task_2.gif">
 
 </details>
 
