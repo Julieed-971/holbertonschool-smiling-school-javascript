@@ -61,18 +61,12 @@ $(document).ready(function () {
   if (window.innerWidth >= 768) return 2;
   return 1;
   }
+
   // DYNAMIC TUTORIALS SECTION POPULATION
-  const tutorialsCarousel = $("#carouselExampleControls2");
-  const tutorialsLoader = $(".loader.video");
-  let cardsPerSlide = getCardsPerSlide();
-  let totalCards = 0;
-  let currentCarouselIndex = 0;
-  let cardWidth = 0;
-
-
-  const loadTutorialsData = (data) => {
-    const tutorialsCarouselInner = $("#carouselExampleControls2 .carousel-inner");
-    tutorialsCarouselInner.empty();
+  const generateCarousel = (data, carouselSelector) => {
+    const carousel = $(carouselSelector);
+    const carouselInner = carousel.find('.carousel-inner');
+    carouselInner.empty();
 
       let itemHtml = `<div class="carousel-item active"><div class="row cards-row flex-nowrap" style="transition: transform 0.5s;">`;
       // Create a card per data in dataset
@@ -104,64 +98,85 @@ $(document).ready(function () {
         `;
       });
       itemHtml += '</div></div>';
-      tutorialsCarouselInner.append(itemHtml);
+      carouselInner.append(itemHtml);
+
       // Set up sliding logic
-      totalCards = data.length;
-      // Index of the first visible card
-      currentCarouselIndex = 0;
-      tutorialsCarousel.removeClass("d-none");
+      carousel.removeClass("d-none");
 
       // Wait for DOM to update, then get card width
       setTimeout(() => {
-        const cols = tutorialsCarouselInner.find('.cards-row > div');
+        const cols = carouselInner.find('.cards-row > div');
         // // Step size: width of one Bootstrap column (including gutter), ensures smooth one-card sliding
         if (cols.length > 0) {
-          cardWidth = cols[0].offsetWidth;
-          cardsPerSlide = getCardsPerSlide();
-          updateCarousel();
+          const cardWidth = cols[0].offsetWidth;
+          const cardsPerSlide = getCardsPerSlide();
+          carousel.data('totalCards', data.length);
+          carousel.data('currentIndex', 0);
+          carousel.data('cardWidth', cardWidth);
+          carousel.data('cardsPerSlide', cardsPerSlide);
+          updateCarousel(carousel);
+          carousel.removeClass("d-none");
+          carousel.siblings('.loader').removeClass("show");
         }
       }, 100);
   };
-
+  
   // Recalculate card width and number of visible cards on window resize,
   // then update the carousel position and arrow states to keep everything responsive.
   $(window).on('resize', function() {
-    const cols = $("#carouselExampleControls2 .cards-row > div");
-    if (cols.length > 0) {
-      cardWidth = cols[0].offsetWidth;
-      cardsPerSlide = getCardsPerSlide();
-      updateCarousel();
-    }
-  });
+    $('.carousel').each(function() {
+      const carousel = $(this);
+      const cols = carousel.find('.cards-row > div');
+      if (cols.length > 0) {
+        const cardWidth = cols[0].offsetWidth;
+        const cardsPerSlide = getCardsPerSlide();
+        carousel.data('cardWidth', cardWidth);
+        carousel.data('cardsPerSlide', cardsPerSlide);
+        updateCarousel(carousel);
+      }
+    });
+    })
 
-  function updateCarousel() {
-    const $row = $("#carouselExampleControls2 .cards-row");
-    // Move the row 
-    $row.css('transform', `translateX(-${currentCarouselIndex * cardWidth}px)`);
-    // Disable/enable arrows when reaching left of right end of carousel checking if 
-    $(".carousel-control-prev", tutorialsCarousel).toggleClass('disabled', currentCarouselIndex === 0);
-    $(".carousel-control-next", tutorialsCarousel).toggleClass('disabled', currentCarouselIndex >= totalCards - cardsPerSlide);
+  function updateCarousel(carousel) {
+    const $row = carousel.find('.cards-row');
+    const currentIndex = carousel.data('currentIndex');
+    const cardWidth = carousel.data('cardWidth');
+    const totalCards = carousel.data('totalCards');
+    const cardsPerSlide = carousel.data('cardsPerSlide');
+    $row.css('transform', `translateX(-${currentIndex * cardWidth}px)`);
+    $(".carousel-control-prev", carousel).toggleClass('disabled', currentIndex === 0);
+    $(".carousel-control-next", carousel).toggleClass('disabled', currentIndex >= totalCards - cardsPerSlide);
   }
 
   // Handle carousel arrow clicks:
   // Move the carousel left or right by one card (step) if not at the end or beginning,
   // and update the carousel position and arrow states accordingly.
-  tutorialsCarousel.on('click', '.carousel-control-next', function (e) {
+  $('.carousel').on('click', '.carousel-control-next', function (e) {
     e.preventDefault();
-    if (currentCarouselIndex < totalCards - cardsPerSlide) {
-      currentCarouselIndex++;
-      updateCarousel();
+    const carousel = $(this).closest('.carousel');
+    let currentIndex = carousel.data('currentIndex') || 0;
+    const totalCards = carousel.data('totalCards');
+    const cardsPerSlide = carousel.data('cardsPerSlide');
+    if (currentIndex < totalCards - cardsPerSlide) {
+      currentIndex++;
+      carousel.data('currentIndex', currentIndex);
+      updateCarousel(carousel);
     }
   });
-  tutorialsCarousel.on('click', '.carousel-control-prev', function (e) {
+  $('.carousel').on('click', '.carousel-control-prev', function (e) {
     e.preventDefault();
-    if (currentCarouselIndex > 0) {
-      currentCarouselIndex--;
-      updateCarousel();
+    const carousel = $(this).closest('.carousel');
+    let currentIndex = carousel.data('currentIndex') || 0;
+    if (currentIndex > 0) {
+      currentIndex--;
+      carousel.data('currentIndex', currentIndex);
+      updateCarousel(carousel);
     }
   });
 
   const loadTutorials = () => {
+    const tutorialsCarousel = $('#carouselExampleControls2')
+    const tutorialsLoader = $('.popular');
     tutorialsCarousel.addClass("d-none");
     tutorialsLoader.addClass("show");
     $.ajax({
@@ -175,15 +190,33 @@ $(document).ready(function () {
       },
       success: function (data) {
         if (data !== null) {
-          loadTutorialsData(data)
-          setTimeout(() => {
-            tutorialsLoader.removeClass("show");
-            tutorialsCarousel.removeClass("d-none");
-            
-          }, 3000);
+          generateCarousel(data, "#carouselExampleControls2")
         }
       }
     })
   }
   loadTutorials();
+
+  const loadVideos = () => {
+    const videosCarousel = $("#carouselExampleControls3");
+    const videosLoader = $(".latest");
+    videosCarousel.addClass("d-none");
+    videosLoader.addClass("show");
+    $.ajax({
+      type: "GET",
+      url: "https://smileschool-api.hbtn.info/latest-videos",
+      dataType: "json",
+      error: function(xhr, status, error) {
+        console.log(xhr.status);
+        console.log(error);
+        videosLoader.removeClass("show");
+      },
+      success: function (data) {
+        if (data !== null) {
+          generateCarousel(data, "#carouselExampleControls3")
+        }
+      }
+    })
+  }
+  loadVideos();
 });

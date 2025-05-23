@@ -204,7 +204,8 @@
   margin: auto;
 }
 
-.loader.video {
+.loader.popular,
+.loader.latest {
   visibility: hidden;
   border: 10px solid #C271FF;
   border-top: 10px solid #f3f3f3;
