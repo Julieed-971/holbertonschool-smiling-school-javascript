@@ -194,7 +194,7 @@
 
 /* Quotes Section  */
 .loader {
-  visibility: hidden;
+  display: none;
   border: 10px solid #f3f3f3;
   border-top: 10px solid #C271FF;
   border-radius: 50%;
@@ -205,8 +205,9 @@
 }
 
 .loader.popular,
-.loader.latest {
-  visibility: hidden;
+.loader.latest,
+.loader.courses {
+  display: none;
   border: 10px solid #C271FF;
   border-top: 10px solid #f3f3f3;
   border-radius: 50%;
@@ -217,7 +218,7 @@
 }
 
 .loader.show {
-  visibility: visible;
+  display: block;
 }
 
 @keyframes spin {

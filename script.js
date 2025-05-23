@@ -219,4 +219,193 @@ $(document).ready(function () {
     })
   }
   loadVideos();
+  
+  let currentQ = '';
+  let currentTopics = '';
+  let currentSorts = '';
+
+  // Populate Topics Dropdown
+  const populateTopics = (data) => {
+    const dropdownTopics = $('#dropdown-topics #dropdownMenuLink span');
+    const dropdownTopicsMenu = $('#dropdown-topics .dropdown-menu');
+    dropdownTopicsMenu.empty();
+    // Set current topic in dropdown
+    $(dropdownTopics).text(data["topic"].charAt(0).toUpperCase() + data["topic"].slice(1));
+    // Populate dropdown items
+    data["topics"].forEach(topic => {
+      const capitalized = topic.charAt(0).toUpperCase() + topic.slice(1);
+      dropdownTopicsMenu.append(`<a class="dropdown-item" href="#">${capitalized}</a>`);
+    });
+  }
+
+  // Populate Sorts Dropdown
+  const populateSorts = (data) =>  {
+    const dropdownSorts = $("#dropdown-sort #dropdownMenuLink span");
+    const dropdownSortsMenu = $("#dropdown-sort .dropdown-menu");
+    dropdownSortsMenu.empty();
+    // Format and set current sort in dropdown
+    const dropdownTitleFormatted = data["sort"].replace(/_/g, ' ');
+    const dropdownTitleCapitalized = dropdownTitleFormatted.charAt(0).toUpperCase() + dropdownTitleFormatted.slice(1);
+    $(dropdownSorts).text(dropdownTitleCapitalized);
+    // Populate dropdown items
+    data["sorts"].forEach(sort => {
+      // Replace underscores with spaces, then capitalize the first letter
+      const formatted = sort.replace(/_/g, ' ');
+      const capitalized = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+      dropdownSortsMenu.append(`<a class="dropdown-item" href="#">${capitalized}</a>`);
+    });
+  }
+
+  // Populate Search Input
+  const populateSearch = (data) => {
+    $('#search-input .form-control').val(data["q"]);
+  }
+
+  const populateCards = (data) => {
+    const videoCount = $('.video-count');
+    const row = $('#videos-row');
+    row.empty();
+    const courses = data["courses"];
+    videoCount.text(`${courses.length} videos`);
+    courses.forEach(course => {
+      let cardHtml = `<div class="col-12 col-sm-4 col-lg-3 d-flex justify-content-center">
+              <div class="card">
+                <img src="${course.thumb_url}" class="card-img-top" alt="Video thumbnail"/>
+                <div class="card-img-overlay text-center">
+                  <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay"/>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title font-weight-bold">${course.title}</h5>
+                  <p class="card-text text-muted">
+                  ${course['sub-title']};
+                  </p>
+                  <div class="creator d-flex align-items-center">
+                    <img src="${course.author_pic_url}" alt="Creator of Video" width="30px" class="rounded-circle" />
+                    <h6 class="pl-3 m-0 main-color">${course.author}</h6>
+                  </div>
+                  <div class="info pt-3 d-flex justify-content-between">
+                    <div class="rating">
+                      ${'<img src="images/star_on.png" alt="star-on" width="15px" />'.repeat(course.star)}
+                      ${'<img src="images/star_off.png" alt="star-off" width="15px" />'.repeat(5 - course.star)}
+                    </div>
+                    <span class="main-color">${course.duration}</span>
+                  </div>
+                </div>
+              </div>
+            </div>`
+      row.append(cardHtml);
+    });
+  }
+
+  function filterAndSortCourses(data, q, topic, sort) {
+    let courses = data.courses;
+
+    // Filter by topic (ignore if "all" or empty)
+    if (topic && topic.toLowerCase() !== "all") {
+      courses = courses.filter(course => course.topic.toLowerCase() === topic.toLowerCase());
+    }
+
+    // Filter by search (keywords)
+    if (q && q.trim() !== "") {
+      const search = q.trim().toLowerCase();
+      courses = courses.filter(course =>
+        course.keywords.some(keyword => keyword.toLowerCase().includes(search))
+      );
+    }
+
+    // Sort
+    if (sort === "most_popular") {
+      courses = courses.sort((a, b) => b.star - a.star);
+    } else if (sort === "most_viewed") {
+      courses = courses.sort((a, b) => b.views - a.views);
+    } else if (sort === "most_recent") {
+      courses = courses.sort((a, b) => b.published_at - a.published_at);
+    }
+
+    return courses;
+  }
+
+  function updateCourses(data) {
+    const coursesVideos = $('#videos-row');
+    const coursesLoader = $('.loader.courses');
+    coursesVideos.addClass("d-none");
+    coursesLoader.addClass("show");
+    
+    const filteredCourses = filterAndSortCourses(
+      data,
+      currentQ,
+      currentTopics,
+      currentSorts
+    );
+    setTimeout(() => {
+      coursesLoader.removeClass("show");
+      coursesVideos.removeClass("d-none");
+      populateCards({ courses: filteredCourses });
+        }, 2000);
+  }
+
+  let allCoursesData = null;
+  
+  const loadCourses = (q = '', topics = '', sorts = '') => {
+    const coursesVideos = $('#videos-row');
+    const coursesLoader = $('.loader .video');
+    coursesVideos.addClass("d-none");
+    coursesLoader.addClass("show");
+    $.ajax({
+      type: "GET",
+      url: "https://smileschool-api.hbtn.info/courses",
+      data: { q, topics, sorts },
+      dataType: "json",
+      error: function(xhr, status, error) {
+        console.log(xhr.status);
+        console.log(error);
+        coursesLoader.removeClass("show");
+      },
+      success: function (data) {
+        if (data !== null) {
+          allCoursesData = data;
+          populateTopics(data);
+          populateSorts(data);
+          populateSearch(data);
+
+          // Filter and sort before showing
+          const filteredCourses = filterAndSortCourses(
+            data,
+            currentQ,
+            currentTopics,
+            currentSorts
+          );
+
+          coursesLoader.removeClass("show");
+          setTimeout(() => {
+            coursesVideos.removeClass("d-none");
+            populateCards({ courses: filteredCourses });
+          }, 2000);
+        } else {
+          coursesLoader.removeClass("show");
+          coursesVideos.removeClass("d-none");
+        }
+
+      }
+    });
+    }
+    $('#search-input .form-control').on('input', function() {
+      currentQ = $(this).val();
+      updateCourses(allCoursesData);
+    });
+
+    $('#dropdown-topics .dropdown-menu').on('click', '.dropdown-item', function() {
+      const selected = $(this).text();
+      currentTopics = selected;
+      $('#dropdown-topics #dropdownMenuLink span').text(selected);
+      updateCourses(allCoursesData);
+    });
+
+    $('#dropdown-sort .dropdown-menu').on('click', '.dropdown-item', function() {
+      const selected = $(this).text();
+      currentSorts = selected;
+      $('#dropdown-sort #dropdownMenuLink span').text(selected);
+      updateCourses(allCoursesData);
+    });
+    loadCourses();
 });
