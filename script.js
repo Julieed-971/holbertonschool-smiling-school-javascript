@@ -314,11 +314,11 @@ $(document).ready(function () {
     }
 
     // Sort
-    if (sort === "most_popular") {
+    if (sort === "Most popular") {
       courses = courses.sort((a, b) => b.star - a.star);
-    } else if (sort === "most_viewed") {
+    } else if (sort === "Most viewed") {
       courses = courses.sort((a, b) => b.views - a.views);
-    } else if (sort === "most_recent") {
+    } else if (sort === "Most recent") {
       courses = courses.sort((a, b) => b.published_at - a.published_at);
     }
 
